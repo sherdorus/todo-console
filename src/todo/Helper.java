@@ -27,6 +27,16 @@ public class Helper {
                     case 3:
                         changeTaskStatus();
                         break;
+                    case 4:
+                        deleteTask();
+                        break;
+                    case 5:
+                        deleteAllTasks();
+                        break;
+                    case 6:
+                        System.out.println("Goodbye!");
+                        scanner.close();
+                        return;
                     default:
                         System.out.println("Invalid choice, please try again.");
                 }
@@ -152,6 +162,40 @@ public class Helper {
                 }
             } else {
                 System.out.println("Invalid task number!");
+            }
+        }
+    }
+
+    private static void deleteTask() {
+        if (tasks.isEmpty()) {
+            emptyListMessage();
+        } else {
+            System.out.println("------------------------");
+            System.out.println("Choose a task to delete:");
+            System.out.println("------------------------");
+            showTask();
+            int chooseTask = scanner.nextInt();
+            if (chooseTask > 0 && chooseTask <= tasks.size()) {
+                tasks.remove(chooseTask - 1);
+                System.out.println("Task deleted successfully!");
+                showTask();
+            } else {
+                System.out.println("Invalid task number!");
+            }
+        }
+    }
+
+    private static void deleteAllTasks() {
+        if (tasks.isEmpty()) {
+            emptyListMessage();
+        } else {
+            showTask();
+            System.out.println("Delete all tasks? Type Y or N:");
+            String chooseTask = scanner.nextLine().toUpperCase();
+            if (chooseTask.equals("Y") || chooseTask.equals("YES")) {
+                tasks.clear();
+                System.out.println("All tasks deleted!");
+                showTask();
             }
         }
     }
