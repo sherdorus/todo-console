@@ -1,15 +1,17 @@
 package todo;
 
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Helper {
     private static List<Task> tasks = new ArrayList<>();
     private static final Scanner scanner = new Scanner(System.in);
+    private static final File file = new File("todo_file");
+    public static File getFile() {
+        return file;
+    }
 
     public static void mainStarter() {
         while (true) {
@@ -22,7 +24,7 @@ public class Helper {
                         addTask();
                         break;
                     case 2:
-                        showTask();
+                        showAllTasks();
                         break;
                     case 3:
                         changeTaskStatus();
@@ -35,6 +37,7 @@ public class Helper {
                         break;
                     case 6:
                         System.out.println("Goodbye!");
+                        saveFile();
                         scanner.close();
                         return;
                     default:
@@ -56,6 +59,24 @@ public class Helper {
         System.out.println("5. Delete all tasks");
         System.out.println("6. Exit");
         System.out.print("Choose option: ");
+    }
+
+    protected static void loadFile(File file) {
+        try (ObjectInputStream inputStream = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+            tasks = (List<Task>) inputStream.readObject();
+        } catch (Exception e) {
+            System.out.println("Cannot find the file: " + e.getMessage());
+
+        }
+    }
+
+    private static void saveFile() {
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(Helper.file)))) {
+            outputStream.writeObject(tasks);
+        } catch (IOException e) {
+            System.out.println("Couldn't write the file out: " + e.getMessage());
+            System.out.println(Arrays.toString(e.getStackTrace()));
+        }
     }
 
     private static void emptyListMessage() {
@@ -91,7 +112,7 @@ public class Helper {
         }
     }
 
-    private static void showTask() {
+    private static void showAllTasks() {
         int count = 1;
         if (tasks.isEmpty()) {
             emptyListMessage();
@@ -122,7 +143,7 @@ public class Helper {
             System.out.println("------------------------------------");
             System.out.println("Choose a task to change it's status:");
             System.out.println("------------------------------------");
-            showTask();
+            showAllTasks();
             int chooseTask = scanner.nextInt();
             if (chooseTask > 0 && chooseTask <= tasks.size()) {
                 System.out.println("--------------------------");
@@ -135,22 +156,22 @@ public class Helper {
                     switch (chooseStatus) {
                         case 1: {
                             tasks.get(chooseTask - 1).setTaskStatus(TaskStatus.IN_QUEUE);
-                            showTask();
+                            showAllTasks();
                             break;
                         }
                         case 2: {
                             tasks.get(chooseTask - 1).setTaskStatus(TaskStatus.COMPLETED);
-                            showTask();
+                            showAllTasks();
                             break;
                         }
                         case 3: {
                             tasks.get(chooseTask - 1).setTaskStatus(TaskStatus.PROGRESS);
-                            showTask();
+                            showAllTasks();
                             break;
                         }
                         case 4: {
                             tasks.get(chooseTask - 1).setTaskStatus(TaskStatus.STARRED);
-                            showTask();
+                            showAllTasks();
                             break;
                         }
                         default:
@@ -173,12 +194,12 @@ public class Helper {
             System.out.println("------------------------");
             System.out.println("Choose a task to delete:");
             System.out.println("------------------------");
-            showTask();
+            showAllTasks();
             int chooseTask = scanner.nextInt();
             if (chooseTask > 0 && chooseTask <= tasks.size()) {
                 tasks.remove(chooseTask - 1);
                 System.out.println("Task deleted successfully!");
-                showTask();
+                showAllTasks();
             } else {
                 System.out.println("Invalid task number!");
             }
@@ -189,13 +210,13 @@ public class Helper {
         if (tasks.isEmpty()) {
             emptyListMessage();
         } else {
-            showTask();
+            showAllTasks();
             System.out.println("Delete all tasks? Type Y or N:");
             String chooseTask = scanner.nextLine().toUpperCase();
             if (chooseTask.equals("Y") || chooseTask.equals("YES")) {
                 tasks.clear();
                 System.out.println("All tasks deleted!");
-                showTask();
+                showAllTasks();
             }
         }
     }
