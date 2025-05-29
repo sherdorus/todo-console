@@ -2,8 +2,6 @@ package todo;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 enum TaskStatus {
     IN_QUEUE, COMPLETED, PROGRESS, STARRED;
@@ -48,5 +46,9 @@ public class Task implements Serializable {
     @Override
     public String toString() {
         return String.format("[%s] %s (Created: %s)", taskStatus, task, date != null ? date : "No date");
+    }
+
+    public String getTask() {
+        return task;
     }
 }

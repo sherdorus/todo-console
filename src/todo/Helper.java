@@ -42,14 +42,17 @@ public class Helper {
                         saveFile();
                         break;
                     case 6:
+                        searchTasksByKeyword();
+                        break;
+                    case 7:
                         deleteTask();
                         saveFile();
                         break;
-                    case 7:
+                    case 8:
                         deleteAllTasks();
                         saveFile();
                         break;
-                    case 8:
+                    case 9:
                         System.out.println("Goodbye!");
                         saveFile();
                         scanner.close();
@@ -71,9 +74,10 @@ public class Helper {
         System.out.println("3. Add task");
         System.out.println("4. Edit task");
         System.out.println("5. Change task status");
-        System.out.println("6. Delete task");
-        System.out.println("7. Delete all tasks");
-        System.out.println("8. Exit");
+        System.out.println("6. Search tasks by keyword");
+        System.out.println("7. Delete task");
+        System.out.println("8. Delete all tasks");
+        System.out.println("9. Exit");
         System.out.print("Choose option: ");
     }
 
@@ -294,6 +298,23 @@ public class Helper {
         } catch (InputMismatchException e) {
             System.out.println("Please enter a valid number.");
             scanner.nextLine();
+        }
+    }
+
+    private static void searchTasksByKeyword() {
+        System.out.println("--------------------------------");
+        System.out.println("Enter keyword to search:");
+        System.out.println("--------------------------------");
+        String keyword = scanner.next();
+        boolean found = false;
+        for (Task task : tasks) {
+            if (task.getTask().toLowerCase().contains(keyword)) {
+                System.out.println(task);
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("No tasks found with keyword: " + keyword);
         }
     }
 }
